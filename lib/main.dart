@@ -1,4 +1,5 @@
 import 'package:audio_app/loginScreen.dart';
+import 'package:audio_app/signInScreen.dart';
 import 'package:audio_app/splashScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(), // Show SplashScreen initially
       routes: {
         '/login': (context) => LoginScreen(), // Route for LoginScreen
+        '/signIn' : (context) => SignInScreen(),
       },
     );
   }

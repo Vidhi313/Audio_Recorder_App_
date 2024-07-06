@@ -1,35 +1,17 @@
 import 'package:audio_app/audioScreen.dart';
-import 'package:flutter/gestures.dart';
+import 'package:audio_app/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignInScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  Future<void> _login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedEmail = prefs.getString('email');
-    String? storedPassword = prefs.getString('password');
-
-    if (storedEmail == _emailController.text &&
-        storedPassword == _passwordController.text) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AudioRecorder()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid email or password')),
-      );
-    }
-  }
-
+class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController _signupEmailController = TextEditingController();
+  final TextEditingController _signupPasswordController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 10),
               TextField(
-                controller: _emailController,
+                controller: _signupEmailController,
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -78,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 10),
               TextField(
-                controller: _passwordController,
+                controller: _signupPasswordController,
                 style: TextStyle(color: Colors.white),
                 obscureText: true,
                 decoration: InputDecoration(
@@ -96,39 +78,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Forgot password?',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _login,
+                onPressed: () {
+                  _signup();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlue,
                   minimumSize: Size(double.infinity, 50),
                 ),
                 child: Text(
-                  'Log In',
+                  'Sign In',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
               SizedBox(height: 20),
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Don’t have an account? ',
-                    style: TextStyle(color: Colors.white),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Sign up',
-                        style: TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()..onTap = () { Navigator.pushReplacementNamed(context, '/signIn');},
-                      ),
-                    ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                },
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'have an account? ',
+                      style: TextStyle(color: Colors.white),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Log In',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -137,5 +118,17 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _signup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', _signupEmailController.text);
+    await prefs.setString('password', _signupPasswordController.text);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Account created!')),
+    );
+    await Future.delayed(Duration(seconds: 1));
+    Navigator.pushReplacementNamed(context, '/login');
   }
 }

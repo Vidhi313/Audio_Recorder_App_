@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_app/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,6 +35,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   bool _isRecording = false;
   int _currentlyPlayingIndex = -1;
   List<Timer?> _recordingTimers = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -167,7 +169,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      key: _scaffoldKey,
+       appBar: AppBar(
         title: Text(
           'A A V A A Z',
           style: TextStyle(
@@ -176,6 +179,41 @@ class _AudioRecorderState extends State<AudioRecorder> {
           ),
         ),
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.menu , color: Colors.white,),
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.black,
+              ),
+              child: Text(
+                'User',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                // Implement your logout functionality here
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
